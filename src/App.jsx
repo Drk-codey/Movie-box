@@ -11,12 +11,13 @@ import LoadingSpinner from "./Components/LoadingSpinner";
 import Home from './Pages/Home';
 import Movies from "./Pages/Movies";
 import Signin from "./Pages/Signin";
-import SignUp from "./Pages/SignUp";
+import SignUp from "./Pages/Signup";
 import Profile from "./Pages/Profile";
 import MovieDetail from "./Pages/MovieDetail";
 import NotFound from './Pages/NotFound';
 import Upcoming from "./Pages/Upcoming";
 import Favorite from "./Pages/Favorite";
+import TvSeries from "./Pages/TvSeries";
 
 
 function AppContent() {
@@ -27,6 +28,7 @@ function AppContent() {
       <Route path="/" element={<Home />} />
       <Route path="/movies" element={<Movies />} />
       <Route path="/movie/:id" element={<MovieDetail />} />
+      <Route path="/tv-series" element={<TvSeries />} />
       <Route path="/upcoming" element={<Upcoming />} />
 
       {/* Auth routes - redirect to home if already authenticated */}
