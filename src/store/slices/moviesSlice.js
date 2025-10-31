@@ -99,8 +99,45 @@ export const fetchGenres = createAsyncThunk(
 );
 
 // Toggle favorites
+// Add helper functions to save/load from localStorage
+const saveFavoritesToStorage = (favorites) => {
+  localStorage.setItem('movieFavorites', JSON.stringify(favorites));
+};
+
+const loadFavoritesFromStorage = () => {
+  const stored = localStorage.getItem('movieFavorites');
+  return stored ? JSON.parse(stored) : [];
+};
+
 export const toggleFavorite = createAsyncThunk(
-  
+  'movies/toggleFavorite',
+  async (movieId, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      
+      if (!auth.isAuthenticated) {
+        return rejectWithValue('You must be logged in to favorite movies');
+      }
+
+       // Get current favorites from localStorage
+      const currentFavorites = loadFavoritesFromStorage();
+      const isFavorite = currentFavorites.includes(movieId);
+      
+      let newFavorites;
+      if (isFavorite) {
+        newFavorites = currentFavorites.filter(id => id !== movieId);
+      } else {
+        newFavorites = [...currentFavorites, movieId];
+      }
+      
+      // Save to localStorage
+      saveFavoritesToStorage(newFavorites);
+
+      return { movieId, isFavorite: !isFavorite, favorites: newFavorites };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
 );
 
 // ===== INITIAL STATE =====
@@ -115,7 +152,7 @@ const initialState = {
   currentMovie: null,
   
   // User data
-  favorites: [],
+  favorites: loadFavoritesFromStorage(),
   watchlist: [],
   
   // Genres
@@ -327,15 +364,9 @@ const moviesSlice = createSlice({
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         state.isLoading.favorites = false;
-        const { movieId, isFavorite } = action.payload;
-        
-        if (isFavorite) {
-          if (!state.favorites.includes(movieId)) {
-            state.favorites.push(movieId);
-          }
-        } else {
-          state.favorites = state.favorites.filter(id => id !== movieId);
-        }
+        state.favorites = action.payload.favorites; // Use the returned array
+        saveFavoritesToStorage(action.payload.favorites); // Save to storage
+        state.errors.favorites = null;
       })
       .addCase(toggleFavorite.rejected, (state, action) => {
         state.isLoading.favorites = false;
