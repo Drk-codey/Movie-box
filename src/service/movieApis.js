@@ -145,6 +145,7 @@ class MovieAPIService {
       originalTitle: movie.original_title,
       originalLanguage: movie.original_language,
       adult: movie.adult,
+      productionCountries: movie.production_countries,
     };
   }
 
