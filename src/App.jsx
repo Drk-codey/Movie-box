@@ -16,8 +16,8 @@ import Profile from "./Pages/Profile";
 import MovieDetail from "./Pages/MovieDetail";
 import NotFound from './Pages/NotFound';
 import Upcoming from "./Pages/Upcoming";
-import Favorite from "./Pages/Favorite";
 import TvSeries from "./Pages/TvSeries";
+import FavoriteSection from "./Components/Profile/FavoriteSection";
 
 
 function AppContent() {
@@ -61,10 +61,10 @@ function AppContent() {
       />
 
       <Route 
-        path="/favorites"
+        path="/profile/:favorites"
         element={
           <ProtectedRoute requireAuth={true}>
-            <Favorite />
+            <FavoriteSection />
           </ProtectedRoute>
         }
       />
